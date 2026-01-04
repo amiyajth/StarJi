@@ -8,3 +8,8 @@ Starji1/__pycache__/
 .DS_Store
 Thumbs.db
 *.log
+Starji1/__pycache__/
+Starji1/*.pyc
+Starji1/.env
+Starji1/*.db
+Starji1/*.sqlite3
