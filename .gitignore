@@ -1,0 +1,10 @@
+Starji0/node_modules/
+Starji0/dist/
+Starji1/venv/
+Starji1/__pycache__/
+*.pyc
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
