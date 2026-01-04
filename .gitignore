@@ -13,3 +13,5 @@ Starji1/*.pyc
 Starji1/.env
 Starji1/*.db
 Starji1/*.sqlite3
+Starji1/.env
+**/.env

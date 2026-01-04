@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     
     # 数据库配置（暂时留空，待会在阶段2配置）
     MYSQL_USER: str = "root"
-    MYSQL_PASSWORD: str = ""  # 待会填你的MySQL密码
+    MYSQL_PASSWORD: str  # 待会填你的MySQL密码
     MYSQL_HOST: str = "localhost"
     MYSQL_PORT: int = 3306
     MYSQL_DATABASE: str = "starji"
