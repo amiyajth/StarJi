@@ -1,20 +1,25 @@
 from pydantic_settings import BaseSettings
-from typing import Optional
+
 
 class Settings(BaseSettings):
     """项目配置"""
     
-    # 项目信息
+    # ========== 项目信息 ==========
     PROJECT_NAME: str = "StarJi API"
     VERSION: str = "1.0.0"
     DESCRIPTION: str = "智能旅行规划助手后端接口"
     
-    # 数据库配置（暂时留空，待会在阶段2配置）
+    # ========== 数据库配置 ==========
     MYSQL_USER: str = "root"
-    MYSQL_PASSWORD: str  # 待会填你的MySQL密码
+    MYSQL_PASSWORD: str
     MYSQL_HOST: str = "localhost"
     MYSQL_PORT: int = 3306
     MYSQL_DATABASE: str = "starji"
+    
+    # ========== JWT 配置（新增）==========
+    SECRET_KEY: str = "your-super-secret-key-change-in-production"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24小时过期
     
     @property
     def DATABASE_URL(self) -> str:
@@ -23,7 +28,8 @@ class Settings(BaseSettings):
     
     class Config:
         case_sensitive = True
-        env_file = ".env"  # 可以从.env文件读取配置
+        env_file = ".env"
+
 
 # 创建全局配置对象
 settings = Settings()

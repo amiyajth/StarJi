@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from models.user import User
 from schemas.user import UserCreate
-from core.security import hash_password
+from core.security import hash_password, verify_password
 
 
 def get_user_by_username(db: Session, username: str):
@@ -16,10 +16,7 @@ def get_user_by_email(db: Session, email: str):
 
 
 def create_user(db: Session, user: UserCreate) -> User:
-    """
-    创建新用户
-    - 密码会被加密后存储
-    """
+    """创建新用户"""
     hashed_pwd = hash_password(user.password)
     
     db_user = User(
@@ -33,3 +30,24 @@ def create_user(db: Session, user: UserCreate) -> User:
     db.refresh(db_user)
     
     return db_user
+
+
+# ========== 新增：验证用户 ==========
+
+def authenticate_user(db: Session, username: str, password: str):
+    """
+    验证用户登录
+    
+    - 先查用户是否存在
+    - 再验证密码是否正确
+    - 返回用户对象 或 None
+    """
+    user = get_user_by_username(db, username)
+    
+    if not user:
+        return None
+    
+    if not verify_password(password, user.hashed_password):
+        return None
+    
+    return user

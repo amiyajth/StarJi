@@ -18,3 +18,16 @@ class UserResponse(UserBase):
 
     class Config:
         from_attributes = True
+
+
+# ========== 新增：Token 相关 ==========
+
+class Token(BaseModel):
+    """登录成功后返回的 Token"""
+    access_token: str
+    token_type: str = "bearer"
+
+
+class TokenData(BaseModel):
+    """Token 中解码出的数据"""
+    username: Optional[str] = None
