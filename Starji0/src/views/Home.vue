@@ -84,18 +84,49 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import CityCard from '../components/CityCard.vue'
+import { getCities } from '../api/city'
+const router = useRouter()
 
-const hotCities = [
-  { id: 1, name: '重庆', image: 'https://picsum.photos/400/300?random=1', description: '山城夜景，火锅飘香，在洪崖洞感受赛博朋克的魅力', tags: ['夜景', '美食', '网红'] },
-  { id: 2, name: '成都', image: 'https://picsum.photos/400/300?random=2', description: '来一场与熊猫的约会，品味巴适的慢生活', tags: ['熊猫', '美食', '悠闲'] },
-  { id: 3, name: '长沙', image: 'https://picsum.photos/400/300?random=3', description: '橘子洲头，岳麓山下，感受星城的青春活力', tags: ['夜生活', '美食', '文艺'] },
-  { id: 4, name: '杭州', image: 'https://picsum.photos/400/300?random=4', description: '西湖美景，江南韵味，在断桥上遇见浪漫', tags: ['西湖', '古镇', '自然'] },
-  { id: 5, name: '西安', image: 'https://picsum.photos/400/300?random=5', description: '千年古都，梦回长安，与历史来一场对话', tags: ['历史', '美食', '文化'] },
-  { id: 6, name: '厦门', image: 'https://picsum.photos/400/300?random=6', description: '面朝大海，春暖花开，在鼓浪屿寻找小清新', tags: ['海岛', '文艺', '清新'] }
-]
+// 城市列表（从后端获取）
+const hotCities = ref([])
 
-// 使用你的诗意文案
+// 加载状态
+const loading = ref(false)
+
+// 获取城市数据
+const fetchCities = async () => {
+  loading.value = true
+  try {
+    const data = await getCities()
+    // 转换数据格式，适配CityCard组件
+    hotCities.value = data.map(city => ({
+      id: city.id,
+      name: city.name,
+      image: city.image || 'https://picsum.photos/400/300?random=' + city.id,
+      description: city.description,
+      tags: city.tags ? city.tags.split(',') : []
+    }))
+    console.log('成功获取城市数据：', hotCities.value)
+  } catch (error) {
+    console.error('获取城市失败：', error)
+    // 失败时用备用数据
+    hotCities.value = [
+      { id: 1, name: '重庆', image: 'https://picsum.photos/400/300?random=1', description: '数据加载失败', tags: ['暂无'] }
+    ]
+  } finally {
+    loading.value = false
+  }
+}
+
+// 组件挂载时获取数据
+onMounted(() => {
+  fetchCities()
+})
+
+// 功能介绍
 const features = [
   { 
     icon: '◇', 
@@ -119,8 +150,10 @@ const features = [
 
 const handleCitySelect = (city) => {
   console.log('选中城市:', city.name)
+  router.push(`/city/${city.id}`)  
 }
 </script>
+
 
 <style scoped>
 .search-input {

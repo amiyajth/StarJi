@@ -6,6 +6,7 @@ import Home from '../views/Home.vue'
 import TravelPlan from '../views/TravelPlan.vue'
 import ImageSearch from '../views/ImageSearch.vue'
 import MyProfile from '../views/MyProfile.vue'
+import CityDetail from '../views/CityDetail.vue'
 
 // 定义路由规则：什么路径显示什么组件
 const routes = [
@@ -28,6 +29,10 @@ const routes = [
     path: '/profile',
     name: 'MyProfile',
     component: MyProfile
+  },
+  { path: '/city/:id',
+    name: 'CityDetail', 
+    component: CityDetail
   }
 ]
 
