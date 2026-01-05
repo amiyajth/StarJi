@@ -1,3 +1,10 @@
+node_modules/
+__pycache__/
+*.pyc
+.env
+dist/
+.venv/
+venv/
 Starji0/node_modules/
 Starji0/dist/
 Starji1/venv/
