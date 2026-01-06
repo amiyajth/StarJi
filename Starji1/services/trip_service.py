@@ -63,3 +63,12 @@ def delete_trip(db: Session, trip_id: int) -> bool:
     db.commit()
     
     return True
+def update_trip_content(db: Session, trip_id: int, content: str):
+    trip = get_trip_by_id(db, trip_id)
+    if not trip:
+        return None
+
+    trip.content = content
+    db.commit()
+    db.refresh(trip)
+    return trip

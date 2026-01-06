@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     MYSQL_HOST: str = "localhost"
     MYSQL_PORT: int = 3306
     MYSQL_DATABASE: str = "starji"
+    SILICONFLOW_API_KEY: str
     
     # ========== JWT 配置（新增）==========
     SECRET_KEY: str = "your-super-secret-key-change-in-production"

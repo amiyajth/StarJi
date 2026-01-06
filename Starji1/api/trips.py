@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-
 from database import get_db
 from schemas.trip import TripCreate, TripUpdate, TripResponse
 from services import trip_service
 from core.deps import get_current_user
 from models.user import User
+from ai.trip_generator import generate_trip_content
 
 router = APIRouter()
 
@@ -86,3 +86,28 @@ def delete_trip(
     trip_service.delete_trip(db, trip_id)
     
     return {"message": "行程已删除"}
+
+
+@router.post("/trips/{trip_id}/generate", response_model=TripResponse, summary="AI 生成行程内容")
+def generate_trip(
+    trip_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """AI 生成行程内容并写回（只能操作自己的行程）"""
+    trip = trip_service.get_trip_by_id(db, trip_id)
+
+    if not trip:
+        raise HTTPException(status_code=404, detail="行程不存在")
+
+    if trip.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="无权生成此行程内容")
+
+    # 调用 AI 生成 markdown 行程
+    content = generate_trip_content(trip)
+
+    updated = trip_service.update_trip_content(db, trip_id, content)
+    if not updated:
+        raise HTTPException(status_code=404, detail="行程不存在")
+
+    return updated
