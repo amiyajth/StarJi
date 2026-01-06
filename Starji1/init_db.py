@@ -1,6 +1,7 @@
 from database import engine, Base, SessionLocal
 from models.city import City
 from models.user import User
+from models.trip import Trip
 
 def init_database():
     """初始化数据库：创建所有表"""

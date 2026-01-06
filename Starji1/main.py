@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import settings
 from api.cities import router as cities_router
 from api.users import router as users_router
+from api.trips import router as trips_router
+
 # 创建FastAPI应用
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -40,3 +42,4 @@ def health_check():
 # 后续会在这里注册更多路由
 app.include_router(cities_router, prefix="/api", tags=["城市"])
 app.include_router(users_router, prefix="/api", tags=["用户"])
+app.include_router(trips_router, prefix="/api", tags=["行程"])
