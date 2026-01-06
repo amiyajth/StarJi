@@ -21,19 +21,30 @@
           <div class="flex flex-col md:flex-row gap-4">
             <div class="flex-1">
               <label class="block text-xs text-gray-500 mb-2 uppercase tracking-wider">出发地</label>
-              <input type="text" placeholder="你在哪里" class="search-input" />
+              <input 
+                v-model="origin" 
+                type="text" 
+                placeholder="你在哪里" 
+                class="search-input" 
+              />
             </div>
             <div class="hidden md:flex items-end pb-3 text-gray-600">→</div>
             <div class="flex-1">
               <label class="block text-xs text-gray-500 mb-2 uppercase tracking-wider">目的地</label>
-              <input type="text" placeholder="想去哪里" class="search-input" />
+              <input 
+                v-model="destination" 
+                type="text" 
+                placeholder="想去哪里" 
+                class="search-input" 
+              />
             </div>
             <div class="flex items-end">
-              <button class="search-btn">开始探索</button>
+              <button class="search-btn" @click="handleExplore">开始探索</button>
             </div>
           </div>
         </div>
       </section>
+
 
       <!-- 热门城市 -->
       <section>
@@ -92,7 +103,8 @@ const router = useRouter()
 
 // 城市列表（从后端获取）
 const hotCities = ref([])
-
+const origin = ref('')
+const destination = ref('')
 // 加载状态
 const loading = ref(false)
 
@@ -152,6 +164,22 @@ const handleCitySelect = (city) => {
   console.log('选中城市:', city.name)
   router.push(`/city/${city.id}`)  
 }
+// 开始探索 → 跳转到旅行规划页
+const handleExplore = () => {
+  if (!origin.value.trim() || !destination.value.trim()) {
+    alert('请输入出发地和目的地')
+    return
+  }
+  
+  router.push({
+    path: '/travel-plan',
+    query: {
+      origin: origin.value,
+      destination: destination.value
+    }
+  })
+}
+
 </script>
 
 

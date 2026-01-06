@@ -30,10 +30,17 @@ const routes = [
     name: 'MyProfile',
     component: MyProfile
   },
-  { path: '/city/:id',
+  { 
+    path: '/city/:id',
     name: 'CityDetail', 
     component: CityDetail
-  }
+  },
+  {
+    path: '/travel-plan',
+    name: 'TravelPlan',
+    component: () => import('../views/TravelPlan.vue')
+}
+
 ]
 
 // 创建路由实例

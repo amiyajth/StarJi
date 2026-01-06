@@ -2,14 +2,14 @@ import request from './index'
 
 export function getCities() {
   return request({
-    url: '/api/cities',
+    url: '/cities',
     method: 'get'
   })
 }
 
 export function getCityById(id) {
   return request({
-    url: `/api/cities/${id}`,
+    url: `/cities/${id}`,
     method: 'get'
   })
 }
