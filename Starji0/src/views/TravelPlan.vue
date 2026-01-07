@@ -117,7 +117,7 @@ const handleGenerate = async () => {
 
     // 第二步：调用 AI 生成
     console.log('正在调用 AI 生成行程内容...')
-    const result = await generateTrip(trip.id)
+    const result = await generateTrip(trip.id, 'agent')
     console.log('AI 生成完成：', result)
 
     // 保存内容

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List
 from database import get_db
@@ -7,6 +7,7 @@ from services import trip_service
 from core.deps import get_current_user
 from models.user import User
 from ai.trip_generator import generate_trip_content
+from ai.agent.travel_agent import generate_trip_content_agent
 
 router = APIRouter()
 
@@ -89,8 +90,9 @@ def delete_trip(
 
 
 @router.post("/trips/{trip_id}/generate", response_model=TripResponse, summary="AI 生成行程内容")
-def generate_trip(
+async def generate_trip(
     trip_id: int,
+    mode: str = Query("basic", description="basic=基础版，agent=天气增强版"),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -103,8 +105,11 @@ def generate_trip(
     if trip.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="无权生成此行程内容")
 
-    # 调用 AI 生成 markdown 行程
-    content = generate_trip_content(trip)
+    # ✅ 分支：basic / agent
+    if mode == "agent":
+        content = await generate_trip_content_agent(trip)
+    else:
+        content = generate_trip_content(trip)
 
     updated = trip_service.update_trip_content(db, trip_id, content)
     if not updated:
