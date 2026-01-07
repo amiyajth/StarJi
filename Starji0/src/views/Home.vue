@@ -13,6 +13,9 @@
         <p class="text-sm text-gray-600 max-w-md mx-auto leading-relaxed">
           在群星的俯瞰下，交付独属你的那一行诗
         </p>
+        <button class="text-gray-400 text-sm hover:text-white transition" @click="$router.push('/login')">
+  登录
+        </button>
       </header>
 
       <!-- 搜索区 -->
