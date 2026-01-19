@@ -4,14 +4,17 @@ from config import settings
 from api.cities import router as cities_router
 from api.users import router as users_router
 from api.trips import router as trips_router
-
+from api.vision import router as vision_router
+from api.profile import router as profile_router
+from database import Base, engine
+from models.user_event import UserEvent  # noqa: F401
 # 创建FastAPI应用
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description=settings.DESCRIPTION,
     version=settings.VERSION,
 )
-
+Base.metadata.create_all(bind=engine)
 # 配置跨域（允许前端调用）
 app.add_middleware(
     CORSMiddleware,
@@ -43,3 +46,5 @@ def health_check():
 app.include_router(cities_router, prefix="/api", tags=["城市"])
 app.include_router(users_router, prefix="/api", tags=["用户"])
 app.include_router(trips_router, prefix="/api", tags=["行程"])
+app.include_router(vision_router, prefix="/api", tags=["vision"])
+app.include_router(profile_router, prefix="/api", tags=["profile"])

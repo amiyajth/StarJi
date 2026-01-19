@@ -11,11 +11,16 @@ import Register from '../views/Register.vue'
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/travel-plan', name: 'TravelPlan', component: TravelPlan },
+
+  // ✅ 视觉 MVP：以图搜旅
   { path: '/search', name: 'ImageSearch', component: ImageSearch },
+
+  // ✅ 用户画像
   { path: '/profile', name: 'MyProfile', component: MyProfile },
+
   { path: '/city/:id', name: 'CityDetail', component: CityDetail },
 
-  // ✅ 新增：登录/注册
+  // ✅ 登录/注册
   { path: '/login', name: 'Login', component: Login },
   { path: '/register', name: 'Register', component: Register },
 ]

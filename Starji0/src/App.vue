@@ -17,7 +17,7 @@
       <router-view v-slot="{ Component }">
         <!-- 页面切换时的过渡动画 -->
         <transition name="page" mode="out-in">
-          <component :is="Component" />
+          <component :is="Component" :key="$route.fullPath" />
         </transition>
       </router-view>
     </main>

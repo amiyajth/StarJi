@@ -8,6 +8,7 @@ from core.deps import get_current_user
 from models.user import User
 from ai.trip_generator import generate_trip_content
 from ai.agent.travel_agent import generate_trip_content_agent
+from services import event_service
 
 router = APIRouter()
 
@@ -47,6 +48,22 @@ def create_trip(
 ):
     """创建新的行程"""
     return trip_service.create_trip(db, trip, current_user.id)
+    created = trip_service.create_trip(db, trip, current_user.id)
+
+    event_service.log_event(
+        db,
+        user_id=current_user.id,
+        event_type="trip_create",
+        trip_id=created.id,
+        payload={
+            "origin": created.origin,
+            "destination": created.destination,
+            "start_date": str(created.start_date),
+            "end_date": str(created.end_date),
+        }
+    )
+
+    return created
 
 
 @router.put("/trips/{trip_id}", response_model=TripResponse, summary="更新行程")
@@ -116,3 +133,14 @@ async def generate_trip(
         raise HTTPException(status_code=404, detail="行程不存在")
 
     return updated
+    event_service.log_event(
+        db,
+        user_id=current_user.id,
+        event_type="trip_generate",
+        trip_id=trip_id,
+        payload={
+            "mode": mode,  # basic/agent
+            "origin": trip.origin,
+            "destination": trip.destination
+        }
+    )
