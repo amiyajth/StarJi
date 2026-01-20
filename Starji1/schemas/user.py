@@ -14,6 +14,7 @@ class UserCreate(UserBase):
 
 class UserResponse(UserBase):
     id: int
+    avatar: Optional[str] = None
     created_at: datetime
 
     class Config:

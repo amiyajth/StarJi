@@ -4,11 +4,11 @@ from typing import List
 from database import get_db
 from schemas.trip import TripCreate, TripUpdate, TripResponse
 from services import trip_service
+from services import event_service
 from core.deps import get_current_user
 from models.user import User
 from ai.trip_generator import generate_trip_content
 from ai.agent.travel_agent import generate_trip_content_agent
-from services import event_service
 
 router = APIRouter()
 
@@ -47,9 +47,10 @@ def create_trip(
     db: Session = Depends(get_db)
 ):
     """创建新的行程"""
-    return trip_service.create_trip(db, trip, current_user.id)
+    # ✅ 先创建行程
     created = trip_service.create_trip(db, trip, current_user.id)
-
+    
+    # ✅ 再记录事件（在 return 之前！）
     event_service.log_event(
         db,
         user_id=current_user.id,
@@ -62,7 +63,7 @@ def create_trip(
             "end_date": str(created.end_date),
         }
     )
-
+    
     return created
 
 
@@ -128,19 +129,22 @@ async def generate_trip(
     else:
         content = generate_trip_content(trip)
 
+    # ✅ 更新行程内容
     updated = trip_service.update_trip_content(db, trip_id, content)
     if not updated:
         raise HTTPException(status_code=404, detail="行程不存在")
 
-    return updated
+    # ✅ 记录生成事件（在 return 之前！）
     event_service.log_event(
         db,
         user_id=current_user.id,
         event_type="trip_generate",
         trip_id=trip_id,
         payload={
-            "mode": mode,  # basic/agent
+            "mode": mode,
             "origin": trip.origin,
-            "destination": trip.destination
+            "destination": trip.destination,
         }
     )
+
+    return updated
