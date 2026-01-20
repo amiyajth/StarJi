@@ -49,7 +49,15 @@
       <section>
         <div class="flex items-center justify-between mb-8">
           <h2 class="text-xl font-medium text-gray-300">热门目的地</h2>
-          <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">查看更多 →</a>
+          <router-link 
+  to="/explore"
+  class="text-gray-500 hover:text-gray-300 text-sm transition-colors flex items-center gap-1 group"
+>
+  查看更多 
+  <span class="group-hover:translate-x-1 transition-transform">→</span>
+</router-link>
+
+
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -141,27 +149,53 @@ const destination = ref('')
 const loading = ref(false)
 const isLoggedIn = computed(() => !!localStorage.getItem('token'))
 
+// ✨ 处理图片URL，确保加载正常
+const processImageUrl = (url) => {
+  if (!url) {
+    // 没有图片，返回默认
+    return 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80'
+  }
+  
+  // 如果是 Unsplash 图片，确保有参数
+  if (url.includes('unsplash.com')) {
+    // 已经有参数了，直接返回
+    if (url.includes('?')) {
+      return url
+    }
+    // 补上参数
+    return `${url}?w=800&q=80`
+  }
+  
+  // 如果是 picsum 随机图，替换成默认图
+  if (url.includes('picsum.photos') || url.includes('random')) {
+    return 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80'
+  }
+  
+  // 其他图片直接返回
+  return url
+}
+
 const fetchCities = async () => {
   loading.value = true
   try {
-    const data = await getCities()
+    // ✨ 只获取6个城市用于首页展示
+    const data = await getCities(6)
     hotCities.value = data.map(city => ({
       id: city.id,
       name: city.name,
-      image: city.image || 'https://picsum.photos/400/300?random=' + city.id,
+      image: processImageUrl(city.image),
       description: city.description,
       tags: city.tags ? city.tags.split(',') : []
     }))
     console.log('成功获取城市数据：', hotCities.value)
   } catch (error) {
     console.error('获取城市失败：', error)
-    hotCities.value = [
-      { id: 1, name: '重庆', image: 'https://picsum.photos/400/300?random=1', description: '数据加载失败', tags: ['暂无'] }
-    ]
+    hotCities.value = []
   } finally {
     loading.value = false
   }
 }
+
 
 onMounted(() => {
   fetchCities()
@@ -219,6 +253,11 @@ const handleFeatureClick = (feature) => {
     router.push('/profile')
     return
   }
+}
+
+// ✨ 查看更多
+const handleViewMore = () => {
+  alert('更多城市功能开发中，敬请期待 ✨')
 }
 </script>
 

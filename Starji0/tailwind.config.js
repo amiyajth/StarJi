@@ -1,36 +1,51 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  // 告诉Tailwind去哪些文件里找class名
   content: [
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
-      // 自定义颜色 - 星空主题
       colors: {
-        // 主背景色：深蓝到紫的渐变会用到这些
+        // 深色主题 - 星空
         'space': {
-          900: '#0a0a1a',  // 最深的夜空
-          800: '#12122a',  // 深空
-          700: '#1a1a3a',  // 星空背景
+          900: '#0a0a1a',
+          800: '#12122a',
+          700: '#1a1a3a',
         },
-        // 强调色：星星和高亮
+        // 浅色主题 - 天空
+        'sky': {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+        },
+        // 星星颜色
         'star': {
-          DEFAULT: '#fef3c7', // 星星的颜色（暖黄）
-          bright: '#fef9c3',  // 更亮的星星
+          DEFAULT: '#fef3c7',
+          bright: '#fef9c3',
         },
-        // 渐变用的紫色
+        // 紫色渐变
         'nebula': {
-          400: '#a78bfa',  // 浅紫
-          500: '#8b5cf6',  // 中紫
-          600: '#7c3aed',  // 深紫
+          400: '#a78bfa',
+          500: '#8b5cf6',
+          600: '#7c3aed',
+        },
+        // ✨ 新增：主题适应色
+        'adaptive': {
+          'text': 'var(--color-text-primary)',
+          'text-secondary': 'var(--color-text-secondary)',
+          'text-muted': 'var(--color-text-muted)',
+          'bg': 'var(--color-bg-primary)',
+          'bg-card': 'var(--color-bg-card)',
+          'border': 'var(--color-border)',
         }
       },
-      // 自定义动画
       animation: {
-        'twinkle': 'twinkle 3s ease-in-out infinite',  // 星星闪烁
-        'float': 'float 6s ease-in-out infinite',       // 漂浮效果
+        'twinkle': 'twinkle 3s ease-in-out infinite',
+        'float': 'float 6s ease-in-out infinite',
       },
       keyframes: {
         twinkle: {

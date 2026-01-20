@@ -7,10 +7,14 @@ import MyProfile from '../views/MyProfile.vue'
 import CityDetail from '../views/CityDetail.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
+import Explore from '../views/Explore.vue'  // ✨ 新增
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/travel-plan', name: 'TravelPlan', component: TravelPlan },
+
+  // ✅ 城市探索
+  { path: '/explore', name: 'Explore', component: Explore },  // ✨ 新增
 
   // ✅ 视觉 MVP：以图搜旅
   { path: '/search', name: 'ImageSearch', component: ImageSearch },

@@ -4,34 +4,40 @@
       
       <!-- 加载中 -->
       <div v-if="loading" class="text-center text-gray-400">
+        <div class="w-12 h-12 mx-auto mb-4 rounded-full border border-white/10 flex items-center justify-center animate-pulse">
+          <span class="text-gray-500">◇</span>
+        </div>
         加载中...
       </div>
 
       <!-- 城市详情 -->
       <div v-else-if="city" class="glass rounded-2xl overflow-hidden">
         <!-- 城市图片 -->
-        <div class="h-64 md:h-80 overflow-hidden">
+        <div class="relative h-64 md:h-80 overflow-hidden">
           <img 
-            :src="city.image || 'https://picsum.photos/800/400?random=' + city.id" 
+            :src="cityImage" 
             :alt="city.name"
             class="w-full h-full object-cover"
           />
+          <!-- 加强遮罩 -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+          
+          <!-- 城市名称叠加在图片上 -->
+          <div class="absolute bottom-6 left-8">
+            <h1 class="text-4xl font-bold text-white drop-shadow-lg">{{ city.name }}</h1>
+            <p class="text-gray-200 mt-2">{{ city.province }}</p>
+          </div>
         </div>
         
         <!-- 城市信息 -->
         <div class="p-8">
-          <!-- 标题 -->
-          <div class="flex items-center justify-between mb-6">
-            <h1 class="text-3xl font-bold text-white">{{ city.name }}</h1>
-            <span class="text-gray-400">{{ city.province }}</span>
-          </div>
-
           <!-- 评分和热度 -->
           <div class="flex items-center gap-6 mb-6">
             <div class="flex items-center gap-2">
               <span class="text-yellow-400">★</span>
-              <span class="text-white">{{ city.rating }}</span>
+              <span class="text-white font-medium">{{ city.rating }}</span>
             </div>
+            <div class="h-4 w-px bg-white/20"></div>
             <div class="text-gray-400">
               热度: {{ city.popularity }}
             </div>
@@ -42,14 +48,14 @@
             <span 
               v-for="tag in cityTags" 
               :key="tag"
-              class="px-3 py-1 rounded-full text-sm bg-white/10 text-gray-300"
+              class="px-3 py-1.5 rounded-full text-sm bg-nebula-500/20 text-nebula-300 border border-nebula-500/30"
             >
               {{ tag }}
             </span>
           </div>
 
           <!-- 描述 -->
-          <p class="text-gray-300 leading-relaxed mb-8">
+          <p class="text-gray-300 leading-relaxed mb-8 text-lg">
             {{ city.description }}
           </p>
 
@@ -65,7 +71,7 @@
               @click="startPlan"
               class="px-6 py-3 rounded-lg bg-gradient-to-r from-nebula-600 to-nebula-500 text-white hover:from-nebula-500 hover:to-nebula-400 transition-all"
             >
-              开始规划旅行
+              开始规划旅行 →
             </button>
           </div>
         </div>
@@ -73,6 +79,7 @@
 
       <!-- 未找到 -->
       <div v-else class="text-center text-gray-400">
+        <div class="text-4xl mb-4">🗺️</div>
         未找到该城市
       </div>
 
@@ -90,6 +97,31 @@ const router = useRouter()
 
 const city = ref(null)
 const loading = ref(true)
+
+// ✨ 处理图片URL，确保加载正常
+const processImageUrl = (url) => {
+  if (!url) {
+    return 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80'
+  }
+  
+  // 如果是 Unsplash 图片，确保有参数
+  if (url.includes('unsplash.com') && !url.includes('?')) {
+    return `${url}?w=800&q=80`
+  }
+  
+  // 如果是 picsum 随机图，替换成默认图
+  if (url.includes('picsum.photos') || url.includes('random')) {
+    return 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80'
+  }
+  
+  return url
+}
+
+// ✨ 获取城市图片
+const cityImage = computed(() => {
+  if (!city.value) return ''
+  return processImageUrl(city.value.image)
+})
 
 // 解析标签
 const cityTags = computed(() => {
@@ -122,8 +154,11 @@ const goBack = () => {
 // 开始规划
 const startPlan = () => {
   router.push({
-    path: '/plan',
-    query: { city: city.value?.name }
+    path: '/travel-plan',
+    query: { 
+      origin: '',
+      destination: city.value?.name 
+    }
   })
 }
 
